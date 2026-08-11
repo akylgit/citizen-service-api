@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+
+.terraform/
+*.tfstate
+*.tfstate.*
+
+*.log
+k8s/secret.yaml
