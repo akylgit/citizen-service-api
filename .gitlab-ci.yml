@@ -1,5 +1,7 @@
 stages:
   - test
+  - docker-build
+  - helm-lint
 
 test:
   stage: test
@@ -11,4 +13,29 @@ test:
 
   script:
     - python -m py_compile app/app.py
-    - echo "Tests completed successfully"
+    - echo "Python tests completed successfully"
+
+docker-build:
+  stage: docker-build
+  image: docker:27
+
+  services:
+    - name: docker:27-dind
+      command: ["--tls=false"]
+
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+
+  script:
+    - docker version
+    - docker build -t citizen-service-api:$CI_COMMIT_SHORT_SHA .
+
+helm-lint:
+  stage: helm-lint
+  image: alpine/helm:3.17.3
+
+  script:
+    - helm lint helm/citizen-service-api
+    - helm template citizen-service-api helm/citizen-service-api >/tmp/rendered.yaml
+    - echo "Helm validation completed successfully"
