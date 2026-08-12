@@ -1,0 +1,13 @@
+stages:
+  - test
+
+test:
+  stage: test
+  image: python:3.11-slim
+
+  before_script:
+    - pip install --no-cache-dir -r app/requirements.txt
+
+  script:
+    - python -m py_compile app/app.py
+    - echo "Tests completed successfully"
