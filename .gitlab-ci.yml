@@ -6,6 +6,7 @@ test:
   image: python:3.11-slim
 
   before_script:
+    - python --version
     - pip install --no-cache-dir -r app/requirements.txt
 
   script:
