@@ -1,49 +1,46 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: citizen-service-api
+  name: {{ include "citizen-service-api.fullname" . }}
   labels:
-    app: citizen-service-api
+    {{- include "citizen-service-api.labels" . | nindent 4 }}
 
 spec:
-  replicas: 2
+  replicas: {{ .Values.replicaCount }}
 
   selector:
     matchLabels:
-      app: citizen-service-api
+      {{- include "citizen-service-api.selectorLabels" . | nindent 6 }}
 
   template:
     metadata:
       labels:
-        app: citizen-service-api
+        {{- include "citizen-service-api.selectorLabels" . | nindent 8 }}
 
     spec:
       containers:
         - name: citizen-service-api
-          image: citizen-service-api:1.0
-          imagePullPolicy: IfNotPresent
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
 
           ports:
-            - containerPort: 5000
+            - name: http
+              containerPort: 5000
+              protocol: TCP
 
           envFrom:
             - configMapRef:
-                name: citizen-service-config
+                name: {{ include "citizen-service-api.fullname" . }}-config
 
           env:
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: citizen-service-secret
+                  name: {{ .Values.secretName }}
                   key: SECRET_KEY
 
           resources:
-            requests:
-              cpu: "100m"
-              memory: "128Mi"
-            limits:
-              cpu: "500m"
-              memory: "256Mi"
+            {{- toYaml .Values.resources | nindent 12 }}
 
           readinessProbe:
             httpGet:

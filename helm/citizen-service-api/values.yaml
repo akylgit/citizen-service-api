@@ -1,0 +1,26 @@
+replicaCount: 2
+
+image:
+  repository: citizen-service-api
+  pullPolicy: IfNotPresent
+  tag: "1.0"
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 5000
+  nodePort: 30081
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "256Mi"
+
+config:
+  APP_VERSION: "1.0"
+  ENVIRONMENT: "development"
+
+secretName: citizen-service-secret
