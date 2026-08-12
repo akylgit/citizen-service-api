@@ -20,7 +20,7 @@ resources:
     memory: "256Mi"
 
 config:
-  APP_VERSION: "1.0"
+  APP_VERSION: "2.0"
   ENVIRONMENT: "development"
 
 secretName: citizen-service-secret
